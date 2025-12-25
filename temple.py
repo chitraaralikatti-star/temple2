@@ -1,3 +1,5 @@
+import os
+
 class DarshanManager:
     def __init__(self):
         self.slots = {
@@ -9,13 +11,12 @@ class DarshanManager:
 
     def book_people(self, slot, count):
         if slot not in self.slots:
-            print("Invalid slot selected")
+            print("Invalid slot")
             return
         self.slots[slot] += count
 
     def check_crowd(self, slot):
         people = self.slots[slot]
-
         if people <= 50:
             return "LOW"
         elif people <= 100:
@@ -30,23 +31,13 @@ class DarshanManager:
 if __name__ == "__main__":
     manager = DarshanManager()
 
-    while True:
-        print("\nAvailable Slots:")
-        for s in manager.slots:
-            print(s)
+    # 🔑 Jenkins parameters (NO input())
+    slot = os.getenv("ENTER_SLOT", "6AM-8AM")
+    people = int(os.getenv("ENTER_PEOPLE", "0"))
 
-        slot = input("Enter slot (or type exit): ")
-        if slot.lower() == "exit":
-            break
+    manager.book_people(slot, people)
 
-        count = int(input("Enter number of people: "))
-        manager.book_people(slot, count)
-
-        print("Crowd level for", slot, ":", manager.check_crowd(slot))
-
-    print("\nFinal Crowd Status:")
-    for s in manager.slots:
-        print(s, "->", manager.check_crowd(s))
-
-    print("Best slot to visit:", manager.best_time_slot())
-
+    print("Slot:", slot)
+    print("People:", people)
+    print("Crowd Level:", manager.check_crowd(slot))
+    print("Best Slot:", manager.best_time_slot())
